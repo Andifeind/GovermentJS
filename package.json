@@ -1,0 +1,18 @@
+{
+  "name": "govermentjs",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.4",
+    "jshashes": "^1.0.5",
+    "koa": "^1.2.0",
+    "superagent": "^1.8.3",
+    "superconf": "^0.1.0"
+  }
+}
