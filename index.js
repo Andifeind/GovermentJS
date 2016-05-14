@@ -32,16 +32,33 @@ app.use(function *(next) {
     goverment.writeCache(this, JSON.stringify({
       status: res.statusCode,
       message: res.statusText,
-      body: res.body,
+      text: res.text,
       headers: res.headers
     }));
   }
 
-  // console.log('RES', res);
-  this.body = res.body;
-  this.message = res.res.statusText;
-  this.status = res.res.statusCode;
+  this.body = res.text;
+  this.message = res.res ? res.res.statusText : res.message;
+  this.status = res.res ? res.res.statusCode : res.status;
 
+  // ctx.body
+  // ctx.body=
+  // ctx.status
+  // ctx.status=
+  // ctx.message
+  // ctx.message=
+  // ctx.length=
+  // ctx.length
+  // ctx.type=
+  // ctx.type
+  // ctx.headerSent
+  // ctx.redirect()
+  // ctx.attachment()
+  // ctx.set()
+  // ctx.append()
+  // ctx.remove()
+  // ctx.lastModified=
+  // ctx.etag=
 
   let proxyHeader = Object.assign({}, res.headers);
   this.set(proxyHeader);
