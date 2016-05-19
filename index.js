@@ -23,24 +23,25 @@ app.use(function *(next) {
   // Check cache
   let fromCache = goverment.checkCache(this);
   let res;
+  let cacheHash;
   if (fromCache) {
     res = fromCache;
   }
   else {
     res = yield goverment.request(this, requestUrl);
 
-    goverment.writeCache(this, JSON.stringify({
-      status: res.statusCode,
-      message: res.statusText,
-      text: res.text,
-      headers: res.headers
-    }));
+    if (res.status < 400) {
+      cacheHash = yield goverment.writeCache(this, JSON.stringify({
+        status: res.status,
+        message: res.message,
+        headers: res.headers
+      }), res.body);
+    }
   }
 
-  this.body = res.text;
-  this.message = res.res ? res.res.statusText : res.message;
-  this.status = res.res ? res.res.statusCode : res.status;
-
+  this.body = res.body;
+  this.message = res.message;
+  this.status = res.status;
   // ctx.body
   // ctx.body=
   // ctx.status
@@ -60,8 +61,24 @@ app.use(function *(next) {
   // ctx.lastModified=
   // ctx.etag=
 
-  let proxyHeader = Object.assign({}, res.headers);
+  let proxyHeader = Object.assign({
+    'X-Goverment-Request-Url': requestUrl,
+    'X-Goverment-Cache-Hash': cacheHash
+  }, res.headers);
   this.set(proxyHeader);
 });
 
 app.listen(4444);
+
+app.on('error', function(err){
+  log.error('server error', err);
+  this.status = 500;
+  if (err.statusCode) {
+    this.status = err.statusCode
+  }
+
+  if (err.statusText) {
+    this.body = err.statusText;
+  }
+
+});

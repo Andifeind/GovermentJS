@@ -1,3 +1,4 @@
 'rewrites':
   'http://localhost:4444/mxd-bbe': 'http://10.64.81.38:80/mxd-bbe'
   'http://localhost:4444/interfacemanager-2.1': 'http://api-ext-stage.maxdome.de:80/interfacemanager-2.1'
+  'http://localhost:4444/heimdall': 'http://localhost:3000'
