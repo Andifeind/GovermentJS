@@ -29,15 +29,9 @@ app.use(function *(next) {
   }
   else {
     res = yield goverment.request(this, requestUrl);
-
-    if (res.status < 400) {
-      cacheHash = yield goverment.writeCache(this, JSON.stringify({
-        status: res.status,
-        message: res.message,
-        headers: res.headers
-      }), res.body);
-    }
   }
+
+  console.log('RESI', res.body);
 
   this.body = res.body;
   this.message = res.message;
@@ -60,11 +54,16 @@ app.use(function *(next) {
   // ctx.remove()
   // ctx.lastModified=
   // ctx.etag=
-
   let proxyHeader = Object.assign({
     'X-Goverment-Request-Url': requestUrl,
     'X-Goverment-Cache-Hash': cacheHash
   }, res.headers);
+
+  if (proxyHeader['content-length']) {
+    delete proxyHeader['content-length'];
+  }
+
+  console.log('SET RES HEADER', proxyHeader);
   this.set(proxyHeader);
 });
 
