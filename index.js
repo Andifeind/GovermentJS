@@ -31,29 +31,9 @@ app.use(function *(next) {
     res = yield goverment.request(this, requestUrl);
   }
 
-  console.log('RESI', res.body);
-
   this.body = res.body;
   this.message = res.message;
   this.status = res.status;
-  // ctx.body
-  // ctx.body=
-  // ctx.status
-  // ctx.status=
-  // ctx.message
-  // ctx.message=
-  // ctx.length=
-  // ctx.length
-  // ctx.type=
-  // ctx.type
-  // ctx.headerSent
-  // ctx.redirect()
-  // ctx.attachment()
-  // ctx.set()
-  // ctx.append()
-  // ctx.remove()
-  // ctx.lastModified=
-  // ctx.etag=
   let proxyHeader = Object.assign({
     'X-Goverment-Request-Url': requestUrl,
     'X-Goverment-Cache-Hash': cacheHash
@@ -63,7 +43,6 @@ app.use(function *(next) {
     delete proxyHeader['content-length'];
   }
 
-  console.log('SET RES HEADER', proxyHeader);
   this.set(proxyHeader);
 });
 

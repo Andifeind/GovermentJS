@@ -13,6 +13,7 @@
     "express": "^4.13.4",
     "jshashes": "^1.0.5",
     "koa": "^1.2.0",
+    "logtopus": "^0.3.0",
     "superagent": "^1.8.3",
     "superconf": "^0.1.0"
   }
