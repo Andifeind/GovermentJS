@@ -1,0 +1,6 @@
+{
+  "name": "goverment",
+  "root": "ui",
+  "main": "app.js",
+  "outfile": "../public/govermentjs.js"
+}

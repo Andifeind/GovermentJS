@@ -1,8 +1,14 @@
 'use strict';
 
+let path = require('path');
+
 let logtopus = require('logtopus');
 let superconf = require('superconf');
 let koa = require('koa');
+let CoreIO = require('coreio');
+
+CoreIO.httpPort = 4545;
+CoreIO.staticDir(path.join(__dirname, 'public/'));
 
 let conf = superconf('govermentjs');
 let log = logtopus.getLogger('govermentjs');
@@ -11,6 +17,12 @@ let app = koa();
 log.setLevel('debug');
 let Goverment = require('./lib/goverment');
 let goverment = new Goverment(conf);
+
+const RequestList = CoreIO.createSyncList('requests', {
+
+});
+
+const requestList = new RequestList();
 
 app.use(logtopus.koa({
   logLevel: 'debug'
@@ -24,12 +36,14 @@ app.use(function *(next) {
   let fromCache = goverment.checkCache(this);
   let res;
   let cacheHash;
-  if (fromCache) {
+  if (false && fromCache) {
     res = fromCache;
   }
   else {
     res = yield goverment.request(this, requestUrl);
   }
+
+  console.log(res)
 
   this.body = res.body;
   this.message = res.message;
@@ -44,11 +58,20 @@ app.use(function *(next) {
   }
 
   this.set(proxyHeader);
+
+  // Update request log
+  requestList.unshift({
+    url,
+    status: this.status,
+    method: this.method,
+    requestId: res.requestId,
+    responseTime: res.responseTime
+  });
 });
 
 app.listen(4444);
 
-app.on('error', function(err){
+app.on('error', function(err) {
   log.error('server error', err);
   this.status = 500;
   if (err.statusCode) {
@@ -59,4 +82,10 @@ app.on('error', function(err){
     this.body = err.statusText;
   }
 
+});
+
+CoreIO.htmlPage('/', {
+  title: 'GovermentJS log',
+  scripts: ['/govermentjs.js'],
+  styles: ['/styles/main.css']
 });

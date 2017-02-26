@@ -1,0 +1,8 @@
+{
+  "ignore": [
+    "cache/*",
+    "public/*",
+    "styl/*",
+    "ui/*"
+  ]
+}
