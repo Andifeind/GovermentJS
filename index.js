@@ -1,5 +1,6 @@
 'use strict';
 
+let fs = require('fs');
 let path = require('path');
 
 let logtopus = require('logtopus');
@@ -17,6 +18,12 @@ let app = koa();
 log.setLevel('debug');
 let Goverment = require('./lib/goverment');
 let goverment = new Goverment(conf);
+
+goverment.observe().then((servers) => {
+  console.log('Goverment observation started successfully!')
+})
+
+/*
 
 const RequestList = CoreIO.createSyncList('requests', {
 
@@ -43,7 +50,7 @@ app.use(function *(next) {
     res = yield goverment.request(this, requestUrl);
   }
 
-  console.log(res)
+  // console.log(res)
 
   this.body = res.body;
   this.message = res.message;
@@ -67,6 +74,33 @@ app.use(function *(next) {
     requestId: res.requestId,
     responseTime: res.responseTime
   });
+
+  if (this.body && this.body.readable) {
+    let body = ''
+    this.body.on('data', (chunk) => body += chunk)
+    this.body.on('end', () => {
+      fs.appendFileSync(path.join(__dirname + '/logs/request.log'), JSON.stringify({
+        time: Date(),
+        url,
+        status: this.status,
+        method: this.method,
+        requestId: res.requestId,
+        responseTime: res.responseTime,
+        body: body
+      }) + '\n')
+    })
+  } else {
+    fs.appendFileSync(path.join(__dirname + '/logs/request.log'), JSON.stringify({
+      time: Date(),
+      url,
+      status: this.status,
+      method: this.method,
+      requestId: res.requestId,
+      responseTime: res.responseTime,
+      body: this.body
+    }) + '\n')
+
+  }
 });
 
 app.listen(4444);
@@ -81,7 +115,6 @@ app.on('error', function(err) {
   if (err.statusText) {
     this.body = err.statusText;
   }
-
 });
 
 CoreIO.htmlPage('/', {
@@ -89,3 +122,5 @@ CoreIO.htmlPage('/', {
   scripts: ['/govermentjs.js'],
   styles: ['/styles/main.css']
 });
+
+*/

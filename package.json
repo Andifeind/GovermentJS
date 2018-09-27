@@ -10,12 +10,14 @@
   "license": "MIT",
   "dependencies": {
     "co": "^4.6.0",
+    "coreio": "^0.5.2",
     "express": "^4.13.4",
     "jshashes": "^1.0.5",
     "koa": "^1.2.0",
     "logtopus": "^0.3.0",
     "superagent": "^1.8.3",
-    "superconf": "^0.1.0"
+    "superconf": "^0.1.0",
+    "websocket": "^1.0.28"
   },
   "devDependencies": {
     "lyssl": "^0.2.0"
